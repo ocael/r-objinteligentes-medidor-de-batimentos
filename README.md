@@ -1,102 +1,64 @@
-# Sistema de Monitoramento Cardíaco com ESP32
+# 🫀 Monitor Cardíaco com ESP32
 
-## Descrição do Projeto
+Este projeto utiliza o **ESP32 DevKit C V4** para monitorar batimentos cardíacos em tempo real, exibindo informações em um **OLED 128x64** e acionando alertas visuais e sonoros conforme a frequência detectada. Além disso, os dados são enviados via **MQTT** para monitoramento remoto.
 
-Este projeto consiste em um sistema de monitoramento cardíaco em tempo real, utilizando um sensor de pulso, display OLED, LEDs indicadores e um buzzer, integrado a um microcontrolador ESP32. O objetivo é monitorar a frequência cardíaca (BPM) e informar se o ritmo do usuário está baixo, normal ou elevado, além de enviar os dados via MQTT para monitoramento remoto.
-
-O sistema realiza leituras periódicas do sensor de pulso e apresenta os valores no display OLED, aciona LEDs indicadores e emite alertas sonoros quando o BPM está fora da faixa considerada ideal.
+![Protótipo](imagens/prototipo.png)
 
 ---
 
-## Componentes Principais
+## 🔧 Componentes Utilizados
 
-- **ESP32 DevKit-C V4**: microcontrolador responsável por processar os dados do sensor, controlar os atuadores e gerenciar a comunicação via Wi-Fi e MQTT.  
-- **Pulse Sensor (sensor de pulso)**: detecta os batimentos cardíacos do usuário e envia sinais analógicos para o ESP32.  
-- **Display OLED 128x64**: exibe mensagens informando o estado do ritmo cardíaco e o BPM atual.  
-- **LEDs indicadores**:  
-  - **LED Vermelho**: indica BPM acima do limite.  
-  - **LED Verde**: indica BPM normal.  
-  - **LED Amarelo**: indica BPM abaixo do limite.  
-- **Buzzer**: emite alertas sonoros quando o ritmo cardíaco está fora da faixa normal.  
-- **Rede Wi-Fi**: conexão utilizada para enviar os dados para um broker MQTT remoto.  
-- **Broker MQTT**: servidor utilizado para integração IoT e monitoramento remoto (`test.mosquitto.org`).
-
----
-
-## Especificações Técnicas
-
-- **Faixa de BPM monitorada**: 50 a 120 BPM  
-- **Display OLED**: 128x64 pixels, interface I2C  
-- **Conexão Wi-Fi**: 2.4 GHz, ESP32 integrado  
-- **Protocolo de comunicação**: MQTT  
-- **LEDs e buzzer**: acionamento digital direto pelos pinos do ESP32  
-- **Pinos utilizados**:  
-  - Sensor de pulso: GPIO 35  
-  - LED baixo: GPIO 2  
-  - LED normal: GPIO 4  
-  - LED alto: GPIO 5  
-  - Buzzer: GPIO 25  
+- ESP32 DevKit C V4  
+- Sensor de pulso (simulado via pino analógico 35)  
+- OLED 128x64 I2C  
+- LEDs indicadores:
+  - 🔴 LED Vermelho: ritmo elevado  
+  - 🟢 LED Verde: ritmo normal  
+  - 🟡 LED Amarelo: ritmo abaixo do ideal  
+- Buzzer para alerta sonoro  
+- Rede Wi-Fi e Broker MQTT (`test.mosquitto.org`)
 
 ---
 
-## Funcionalidades
+## ⚙ Funcionamento
 
-1. **Leitura do sensor de pulso**: o ESP32 captura sinais analógicos do sensor e converte em BPM.  
-2. **Classificação do ritmo cardíaco**:  
-   - BPM ≤ 50 → ritmo abaixo do ideal (LED amarelo + buzzer).  
-   - BPM 51–119 → ritmo estável (LED verde).  
-   - BPM ≥ 120 → ritmo elevado (LED vermelho + buzzer).  
-3. **Exibição em tempo real**: o display OLED mostra o BPM e a categoria do ritmo cardíaco.  
-4. **Alertas sonoros**: buzzer emite sinais quando o BPM está fora da faixa ideal.  
-5. **Publicação via MQTT**: envia o BPM e estado do ritmo para tópicos remotos (`monitor/cardiaco/valor` e `monitor/cardiaco/estado`).  
-6. **Monitoramento remoto**: qualquer dispositivo conectado ao broker MQTT pode receber os dados atualizados em tempo real.
-
----
-
-## Instalação e Configuração
-
-1. Instale a IDE Arduino e adicione o suporte ao ESP32.  
-2. Conecte o ESP32 ao computador via cabo USB.  
-3. Instale as bibliotecas necessárias:  
-   - `Adafruit_GFX`  
-   - `Adafruit_SSD1306`  
-   - `PubSubClient`  
-4. Configure os parâmetros de Wi-Fi e MQTT no código:  
-
-```cpp
-const char* wifiSSID = "SEU_SSID";
-const char* wifiPASS = "SUA_SENHA";
-const char* brokerMQTT = "test.mosquitto.org";
-```
-
-5. Faça o upload do código para o ESP32.  
-6. Abra o monitor serial para acompanhar a conexão e os dados do sensor.
+1. **Leitura do sensor**: o ESP32 lê o valor do pulso no pino analógico e converte para BPM (batimentos por minuto).  
+2. **Classificação do ritmo**:
+   - BPM ≤ 50 → Ritmo Abaixo do Ideal 🟡  
+   - BPM entre 51 e 119 → Ritmo Estável 🟢  
+   - BPM ≥ 120 → Ritmo Elevado 🔴  
+3. **Acionamento de alertas**:
+   - LED correspondente acende  
+   - Buzzer dispara quando o ritmo está fora do normal  
+4. **Exibição OLED**: mostra BPM e estado do ritmo em tempo real  
+5. **Envio MQTT**: dados são publicados nos tópicos:
+   - `monitor/cardiaco/valor`  
+   - `monitor/cardiaco/estado`
 
 ---
 
-## Testes Realizados
+## 🧪 Testes Realizados
 
-- **Leitura do sensor**: simulações com diferentes sinais analógicos mostraram que o ESP32 interpreta corretamente o BPM.  
-- **Acionamento dos LEDs**: cada faixa de BPM aciona o LED correspondente e, quando necessário, o buzzer.  
-- **Display OLED**: apresenta os valores de BPM e o estado do ritmo em tempo real.  
-- **MQTT**: o ESP32 conecta-se ao broker e publica corretamente os tópicos, permitindo monitoramento remoto.  
-
-**Resultados obtidos**: sistema estável, leituras precisas e alertas funcionando de acordo com a faixa de BPM configurada.
-
----
-
-## Possíveis Melhorias
-
-- Implementar armazenamento de histórico de BPM em banco de dados.  
-- Desenvolver dashboard web ou app para visualização gráfica do ritmo cardíaco.  
-- Adicionar notificações em smartphone quando BPM estiver fora da faixa.  
-- Implementar múltiplos sensores para monitoramento simultâneo de várias pessoas.
+- ✅ Leitura do sensor: respostas consistentes e precisas do BPM  
+- ✅ LEDs: acionam corretamente conforme faixa de BPM  
+- ✅ Buzzer: alerta sonoro funcionando para BPM fora da faixa normal  
+- ✅ OLED: valores exibidos claramente e atualizados em tempo real  
+- ✅ MQTT: conexão estável e envio correto dos dados para monitoramento remoto
 
 ---
 
-## Referências
+## 💡 Possíveis Melhorias
 
-- Adafruit SSD1306 OLED Library Documentation  
-- PubSubClient MQTT Library for Arduino  
-- ESP32 DevKit-C V4 Technical Reference  
-- HiveMQ MQTT Broker Documentation
+- Armazenar histórico de BPM em banco de dados  
+- Criar dashboard web ou app para visualização gráfica 📊  
+- Notificações em smartphone para BPM fora da faixa ⚠️  
+- Monitoramento simultâneo de múltiplos sensores
+
+---
+
+## 📚 Referências
+
+- [Adafruit SSD1306 OLED Library](https://github.com/adafruit/Adafruit_SSD1306)  
+- [PubSubClient MQTT Library for Arduino](https://pubsubclient.knolleary.net/)  
+- [ESP32 DevKit-C V4 Technical Reference](https://www.espressif.com/)  
+- [HiveMQ MQTT Broker Documentation](https://www.hivemq.com/)
