@@ -24,9 +24,9 @@ Este projeto utiliza o **ESP32 DevKit C V4** para monitorar batimentos cardíaco
 
 1. **Leitura do sensor**: o ESP32 lê o valor do pulso no pino analógico e converte para BPM (batimentos por minuto).  
 2. **Classificação do ritmo**:
-   - BPM ≤ 50 → Ritmo Abaixo do Ideal 🟡  
-   - BPM entre 51 e 119 → Ritmo Estável 🟢  
-   - BPM ≥ 120 → Ritmo Elevado 🔴  
+   - BPM < 50 → Ritmo Abaixo do Ideal 🟡  
+   - BPM entre 50 e 120 → Ritmo Estável 🟢  
+   - BPM > 120 → Ritmo Elevado 🔴  
 3. **Acionamento de alertas**:
    - LED correspondente acende  
    - Buzzer dispara quando o ritmo está fora do normal  
