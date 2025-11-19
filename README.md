@@ -1,4 +1,4 @@
-# 🫀 Monitor Cardíaco com ESP32
+as referências deixe diferente t# 🫀 Monitor Cardíaco com ESP32
 
 Este projeto utiliza o **ESP32 DevKit C V4** para monitorar batimentos cardíacos em tempo real, exibindo informações em um **OLED 128x64** e acionando alertas visuais e sonoros conforme a frequência detectada. Além disso, os dados são enviados via **MQTT** para monitoramento remoto.
 
